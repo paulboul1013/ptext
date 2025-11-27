@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <termios.h>
+#include <ctype.h>
+
 
 
 struct termios orig_termios;
@@ -28,7 +30,13 @@ int main(){
     char c;
     //read one character from stdin
     //exit is press ctrl+d or ctrl+c
-    while(read(STDIN_FILENO,&c,1)==1 && c!='q');
+    while(read(STDIN_FILENO,&c,1)==1 && c!='q'){
+        if (iscntrl(c)) {
+            printf("%d\n",c);
+        }else{
+            printf("%d ('%c')\n",c,c);
+        }
+    }
 
 
 
