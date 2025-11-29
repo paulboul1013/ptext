@@ -55,3 +55,37 @@
 - turn off all output processing features by turning off the OPOST flag. In practice, the "\n" to "\r\n"
 
 - turn off BRKINT, INPCK, ISTRIP, and CS8 won’t have any observable effect for you。But at one time or another, switching them off was considered (by someone) to be part of enabling “raw mode”
+
+- read() will wait indefinitely for input from the keyboard before it returns，if  want to do something like animate something on the screen while waiting for user input，can set a timeout
+
+- VMIN and VTIME come from <termios.h>，c_cc field，which stands for “control characters”
+
+- VMIN value sets the minimum number of bytes of input needed before read()
+
+- The VTIME value sets the maximum amount of time to wait before read() returns
+
+- Most C library functions that fail will set the global errno variable to indicate what the error was.
+
+- errno and EAGAIN come from <errno.h>
+
+- tcsetattr(), tcgetattr(), and read() all return -1 on failure
+
+- run echo test | ./main result in the error from tcgetattr(), something like Inappropriate ioctl for device.
+
+- Ctrl key combined with the alphabetic keys seemed to map to bytes 1–26
+
+- Ctrl+q mapping to quit operation
+
+- write() and STDOUT_FILENO come from <unistd.h>
+
+- \x1b, which is the escape character or 27 in decimal.
+
+-  '[' character. Escape sequences instruct the terminal to do various text formatting tasks, such as coloring text, moving the cursor around, and clearing parts of the screen
+
+- using the J command to clear the screen. so just <esc>[J by itself would also clear the screen from the cursor to the end.
+
+- <esc>[2J command left the cursor at the bottom of the screen.  reposition it at the top-left corner so that we’re ready to draw the editor interface from top to bottom
+
+- The H command actually takes two arguments: the row number and the column number at which to position the cursor
+
+- 
