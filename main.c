@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <ctype.h>
+#include <sys/ioctl.h>
 
 
 //define
@@ -92,6 +93,21 @@ void editorProcessKeypress(){
             exit(0);
             break;
     }
+}
+
+int getWindowSize(int *rows, int *cols){
+    struct winsize ws;
+
+    if (ioctl(STDOUT_FILENO,TIOCGWINSZ,&ws)==-1 || ws.ws_col==0){
+        return -1;
+    }
+    else{
+    
+        *rows=ws.ws_row;
+        *cols=ws.ws_col;
+        return 0;
+    }
+   
 }
 
 
