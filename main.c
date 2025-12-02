@@ -14,6 +14,8 @@
 struct termios orig_termios;
 
 struct editorConfig {
+    int screenrows;
+    int screencols;
     struct termios orig_termios;
 };
 
@@ -110,10 +112,15 @@ int getWindowSize(int *rows, int *cols){
    
 }
 
+void initEditor(){
+    if (getWindowSize(&E.screenrows,&E.screencols)==-1) die("getWindowSize");
+}
+
 
 //init
 int main(){
     enableRawMode();    
+    initEditor();
 
     while(1){
         editorRefreshScreen();
