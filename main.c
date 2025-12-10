@@ -67,7 +67,7 @@ char editorReadKey(){
 struct abuf {
     char *b;
     int len;
-}
+};
 
 #define ABUF_INIT {NULL,0}
 
@@ -93,13 +93,16 @@ void initEditor(){
 void editorRefreshScreen(){
     struct abuf ab=ABUF_INIT;
     
+    abAppend(&ab,"\x1b[?25l",6); //hide cursor
     abAppend(&ab,"\x1b[2J",4); //clear screen
     abAppend(&ab,"\x1b[H",3); //move cursor to top-left corner
 
     editorDrawRows(&ab);
 
     abAppend(&ab,"\x1b[H",3);
+    abAppend(&ab,"\x1b[?25h",6); //show cursor
 
+    
     write(STDOUT_FILENO,ab.b,ab.len);
     abFree(&ab);
 }
