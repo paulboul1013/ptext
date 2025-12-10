@@ -138,6 +138,14 @@ int getWindowSize(int *rows, int *cols){
    
 }
 
+//append buffer
+struct abuf {
+    char *b;
+    int len;
+}
+
+#define ABUF_INIT {NULL,0}
+
 void initEditor(){
     if (getWindowSize(&E.screenrows,&E.screencols)==-1) die("getWindowSize");
 }
