@@ -88,4 +88,61 @@
 
 - The H command actually takes two arguments: the row number and the column number at which to position the cursor
 
-- 
+- should be able to get the size of the terminal by simply calling ioctl() with the TIOCGWINSZ request
+
+- TIOCGWINSZ = T:Terminal,I:Input,O:Output,C:control，Get WINdow SiZe
+
+- ioctl(), TIOCGWINSZ, and struct winsize come from <sys/ioctl.h>
+
+- if success,ioctl() place the nubmer of col wide and rows high the terminal is into the given winsize struct，othereise returns -1.
+
+- if ioctl() failed ，have getWindowSize() report failure by returning -1，if it succeeded,pass the values back by settig the int references that passed to the function
+
+- initEditor()’s job will be to initialize all the fields in the E struct
+
+- ioctl() isn’t guaranteed to be able to request the window size on all systems,going to provide a fallback method of getting the window size
+
+- the way is the position of cursor at the bottom-right of the screen,then ,use escape sequences that let us query the position of the cursor,it can tells us how many rows and cols there must be on the screen
+
+- sending two escape sequences one after the other. The C command (Cursor Forward) moves the cursor to the right, and the B command (Cursor Down) moves the cursor down。argument says how much to move it right or down by
+
+-  use a very large value, 999, which should ensure that the cursor reaches the right and bottom edges of the screen
+
+- sscanf() comes from <stdio.h>
+
+- we pass a pointer to the third character of buf to sscanf(), skipping the '\x1b' and '[' characters.
+
+- passing a string of the form 24;80 to sscanf()  also passing it the string %d;%d which tells it to parse two integers separated by a ;, and put the values into the rows and cols variables.
+
+- Append buffer:when every time we refresh the screen， make a whole bunch of small write()，will cause  annoying flicker effect
+
+- to make sure the whole screen updates at once，replace `write()` with appends the string to a buffer，but C doesn't have dynamic strings,so create own dynamic string type call `abuf` to support append
+
+- another possible cause flicker effect will take care of now，it's possible that cursor might be displayed in the middle of the screen split second when the terminal is drawing the screen，make sure dones't happen，hide cursor before refreshing the screen，and then show it again immediately after the refresh finish
+
+-  use escape sequences to tell the terminal to hide and show the cursor。 The h and l commands
+
+- instead of clearing the whole screen before each refresh，more optimal to clear each line as we redraw line，remove `<esc>[2j` (clear entire screen) escape sequence,and instead put a `<esc>[K`  sequence at the end of each line we draw
+
+- K command erases part of the current line，it's like J command
+
+- name editor and a version number，use the welcome buffer and snprintf() to interpolate our KILO_VERSION
+
+- To center a string, you divide the screen width by 2 and substract half of the string length ， tells you how far from the left edge of the screen you should start printing the string，fill that space with space chracters,expect for first character,it should tilde
+
+
+- want the user to be able to move the cursor around，first step is keep track  of the cursor's `X` and `Y` position in the global editor state
+
+- E.cx is horizontal coordinate，E.cy is the vertical coordinate， initialize both of them to 0，start at the top-left of the screen
+
+- allow user to move the cursor uinsg wasd keys
+
+- replace the wasd keys with the arrow keys，saw before arrow keys sends multiple bytes are in the form of an escape sequence that starts with '\x1b', '[', followed by an 'A', 'B', 'C', or 'D' depending on which of the four arrow keys was pressed
+
+- choose a representation for arrow keys that doesn’t conflict with wasd, in the editorKey enum
+
+- give them a large integer value that is out of the range of a char
+
+-  they don’t conflict with any ordinary keypresses
+
+- A line viewer
