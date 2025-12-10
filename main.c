@@ -142,10 +142,25 @@ void editorDrawRows(struct abuf *ab) {
     }
 }
 
-
-
-
 //input
+
+void editorMoveCursor(char key){
+    switch (key) {
+        case 'a':
+            E.cx--;
+            break;
+        case 's':
+            E.cy++;
+            break;
+        case 'w':
+            E.cy--;
+            break;
+        case 'd':
+            E.cx++;
+            break;
+    }
+}
+
 void editorProcessKeypress(){
     char c=editorReadKey();
     
@@ -159,6 +174,13 @@ void editorProcessKeypress(){
             write(STDOUT_FILENO,"\x1b[2J",4); //clear screen
             write(STDOUT_FILENO,"\x1b[H",3); //move cursor to top-left corner
             exit(0);
+            break;
+
+        case 'w':
+        case 's':
+        case 'a':
+        case 'd':
+            editorMoveCursor(c);
             break;
     }
 }
