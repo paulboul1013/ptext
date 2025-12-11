@@ -159,6 +159,8 @@ void abFree(struct abuf *ab){
 
 
 //output
+void editorDrawRows(struct abuf *ab);
+
 void editorRefreshScreen(){
     struct abuf ab=ABUF_INIT;
     
@@ -200,9 +202,9 @@ void editorDrawRows(struct abuf *ab) {
                 abAppend(ab,"~",1);
             }
         }else{
-            int len=E.row.size;
+            int len=E.row->size;
             if (len>E.screencols) len=E.screencols;
-            abAppend(ab,E.row.chars,len);
+            abAppend(ab,E.row->chars,len);
         }
        
 
@@ -318,6 +320,17 @@ int getWindowSize(int *rows, int *cols){
    
 }
 
+//row operations
+void editorAppendRow(char *s,size_t len) {
+    E.row = malloc(sizeof(erow));
+    E.row->size=len;
+    E.row->chars=malloc(len+1);
+    memcpy(E.row->chars,s,len);
+    E.row->chars[len]='\0';
+    E.numrows=1;
+}
+
+
 //file i/o
 void editorOpen(char *filename){
     FILE *fp=fopen(filename,"r");
@@ -335,11 +348,7 @@ void editorOpen(char *filename){
         }
     
 
-    E.row.size=linelen;
-    E.row.chars=malloc(linelen);
-    memcpy(E.row.chars,line,linelen);
-    E.row.chars[linelen]='\0';
-    E.numrows=1;
+        editorAppendRow(line,linelen);
 
     }
     free(line);
