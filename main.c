@@ -35,7 +35,9 @@ struct termios orig_termios;
 
 typedef struct erow {
     int size;
+    int rsize;
     char *chars;
+    char *render;
 }erow;
 
 struct editorConfig {
@@ -371,6 +373,9 @@ void editorAppendRow(char *s,size_t len) {
     memcpy(E.row[at].chars,s,len);
     E.row[at].chars[len]='\0';
     E.numrows++;
+
+    E.row[at].rsize=0;
+    E.row[at].render=NULL;
 }
 
 
