@@ -192,6 +192,7 @@ void abFree(struct abuf *ab){
 //output
 void editorDrawRows(struct abuf *ab);
 void editorScroll();
+int editorRowCxToRx(erow *row,int cx);
 
 void editorRefreshScreen(){
     editorScroll();
@@ -316,6 +317,8 @@ void editorMoveCursor(int key){
     }
 }
 
+void editorInsertChar(int c);
+
 void editorProcessKeypress(){
     int c=editorReadKey();
     
@@ -353,6 +356,11 @@ void editorProcessKeypress(){
         case ARROW_RIGHT:
             editorMoveCursor(c);
             break;
+            
+        case '\t':
+            editorInsertChar('\t');
+            break;
+            
     }
 
 
@@ -426,6 +434,21 @@ void editorAppendRow(char *s,size_t len) {
     E.numrows++;
 
 
+}
+
+void editorInsertChar(int c) {
+    if (E.cy == E.numrows) {
+        editorAppendRow("", 0);
+    }
+    
+    erow *row = &E.row[E.cy];
+    row->chars = realloc(row->chars, row->size + 2);
+    memmove(&row->chars[E.cx + 1], &row->chars[E.cx], row->size - E.cx);
+    row->chars[E.cx] = c;
+    row->size++;
+    row->chars[row->size] = '\0';
+    editorUpdateRow(row);
+    E.cx++;
 }
 
 
