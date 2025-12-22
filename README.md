@@ -146,3 +146,12 @@ rowoff (Row Offset)：紀錄目前垂直捲動了多少行。
 限制：
 限制 E.cx 和 E.cy 只能在合法的檔案範圍內移動。
 Phantom Cursor 問題：使用者可能會將游標移到長行的末端，然後下移到短行。此時 E.cx 沒變，游標會跑到短行的右邊虛空處。需要邏輯修正（將 E.cx 校正為短行的長度）。
+
+
+## tab and the cursor 
+
+cursor 還不會跟對tabs有反應，當cursor位置在螢幕上，還需要假設每個字元往前幾個行數，運用水平座標變數`E.rx`。當`E.cx`是在表式`erow`結構中的的`chars`的索引，然而`E.rx`是`render`結構的索引，如果現在的line中沒有tab，`E.rx`會跟`E.cx`一樣，有tabs的話，`E.rx`將會rendered額外的spaces超過`E.cx`
+
+加入`rx`到global state struct，並初始化0
+
+## Scrolling with Page Up and Page Down
