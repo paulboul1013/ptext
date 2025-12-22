@@ -217,6 +217,9 @@ void editorRefreshScreen(){
 
 void editorScroll() {
     E.rx=E.cx;
+    if (E.cy < E.numrows){
+        E.rx=editorRowCxToRx(&E.row[E.cy],E.cx);
+    }
 
     if (E.cy < E.rowoff) {
         E.rowoff=E.cy;
