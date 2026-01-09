@@ -356,8 +356,10 @@ void editorMoveCursor(int key){
         if (row && E.cx < row->size) {
             E.cx++;
         }else if (row && E.cx == row->size){
-            E.cy++;
-            E.cx=0;
+            if (E.cy < E.numrows - 1){ // Only move to next line if not at the last row
+                E.cy++;
+                E.cx=0;
+            }
         }
         break;
     }
