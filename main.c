@@ -201,6 +201,8 @@ void editorScroll();
 int editorRowCxToRx(erow *row,int cx);
 void editorSetStatusMessage(const char *fmt,...);
 
+
+
 void editorDrawMessageBar(struct abuf *ab){
     abAppend(ab,"\x1b[K",3);
     int msglen=strlen(E.statusmsg);
@@ -517,6 +519,17 @@ void editorInsertChar(int c) {
     E.cx++;
 }
 
+
+void editorRowInsertChar(erow *row,int at,int c){
+    if (at < 0 || at > row->size) {
+        at=row->size;
+    }
+    row->chars=realloc(row->chars,row->size+2);
+    memmove(&row->chars[at+1],&row->chars[at],row->size-at+1);
+    row->size++;
+    row->chars[at]=c;
+    editorUpdateRow(row);
+}
 
 //file i/o
 void editorOpen(char *filename){
