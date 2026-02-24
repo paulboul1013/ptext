@@ -22,6 +22,7 @@
 #define CTRL_KEY(k) ((k) & 0x1f)
 #define KILO_VERSION "0.0.1"
 #define KILO_TAB_STOP 8
+#define KILO_QUIT_TIMES 3
 
 enum editorKey {
     BACKSPACE=127,
@@ -542,18 +543,25 @@ void editorMoveCursor(int key){
 }
 
 void editorProcessKeypress(){
+    static int quit_times=KILO_QUIT_TIMES;
     int c=editorReadKey();
     
     switch (c) {
         case '\r':
             break;
 
-        case 'q':
+        case 'q': //keyboard q
+            if (E.dirty && quit_times > 0){
+                editorSetStatusMessage("WARNING!!! File has unsaved changes. "
+                "Press q %d more times to quit.", quit_times);
+                quit_times--;
+                return;
+            }
             write(STDOUT_FILENO,"\x1b[2J",4); 
             write(STDOUT_FILENO,"\x1b[H",3);
             exit(0);
             break;
-        case CTRL_KEY('q'):
+        case CTRL_KEY('q')://ctrl-q
             write(STDOUT_FILENO,"\x1b[2J",4); //clear screen
             write(STDOUT_FILENO,"\x1b[H",3); //move cursor to top-left corner
             exit(0);
@@ -617,7 +625,7 @@ void editorProcessKeypress(){
             
     }
 
-
+    quit_times=KILO_QUIT_TIMES;
 }
 
 /*** init ***/
