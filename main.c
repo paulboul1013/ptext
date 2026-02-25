@@ -325,12 +325,18 @@ void editorInsertChar(int c){
 }
 
 void editorDelChar(){
-    if (E.cy==E.numrows) return;
+    if (E.cy==E.numrows) return;//when cursor is on the last line
+    if (E.cx==0 && E.cy==0) return; //when cursor is at the beginning of the first line
 
     erow *row=&E.row[E.cy];
     if (E.cx>0){
         editorRowDelChar(row,E.cx-1);
         E.cx--;
+    }else{ //when delete at the beginning of a line, merge with the previous line
+        E.cx=E.row[E.cy-1].size;
+        editorRowAppendString(&E.row[E.cy-1],row->chars,row->size);
+        editorDelRow(E.cy);
+        E.cy--;
     }
 }
 
