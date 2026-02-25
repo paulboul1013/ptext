@@ -253,11 +253,11 @@ void editorUpdateRow(erow *row){
     row->rsize=idx;
 }
 
-void editorAppendRow(char *s,size_t len) {
+void editorInsertRow(int at,char *s,size_t len) {
+    if (at<0 || at>E.numrows) return;
     E.row = realloc(E.row,sizeof(erow)*(E.numrows+1));
+    memmove(&E.row[at+1],&E.row[at],sizeof(erow)*(E.numrows-at));
 
-
-    int at=E.numrows;
     E.row[at].size=len;
     E.row[at].chars=malloc(len+1);
     memcpy(E.row[at].chars,s,len);
@@ -318,10 +318,25 @@ void editorRowDelChar(erow *row,int at){
 
 void editorInsertChar(int c){
     if (E.cy==E.numrows){
-        editorAppendRow("",0);
+        editorInsertRow(E.numrows,"",0);
     }
     editorRowInsertChar(&E.row[E.cy],E.cx,c);
     E.cx++;
+}
+
+void editorInsertNewline(){
+    if (E.cx==0){
+        editorInsertRow(E.cy,"",0);
+    }else{
+        erow *row=&E.row[E.cy];
+        editorInsertRow(E.cy+1,&row->chars[E.cx],row->size-E.cx);
+        row=&E.row[E.cy];
+        row->size=E.cx;
+        row->chars[row->size]='\0';
+        editorUpdateRow(row);
+    }
+    E.cy++;
+    E.cx=0;
 }
 
 void editorDelChar(){
@@ -361,7 +376,7 @@ void editorOpen(char *filename){
         }
     
 
-        editorAppendRow(line,linelen);
+        editorInsertRow(E.numrows, line, linelen);
 
     }
     free(line);
@@ -594,8 +609,9 @@ void editorProcessKeypress(){
     
     switch (c) {
         case '\r':
+        case '\n':
+            editorInsertNewline();
             break;
-
         case 'q': //keyboard q
             if (E.dirty && quit_times > 0){
                 editorSetStatusMessage("WARNING!!! File has unsaved changes. "
