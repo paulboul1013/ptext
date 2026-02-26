@@ -466,7 +466,7 @@ void editorFind(){
         char *match=strstr(row->render,query);
         if (match){
             E.cy=i;
-            E.cx=match-row->render;
+            E.cx=editorRowRxToCx(row,match-row->render);
             E.rowoff=E.numrows;
             break;
         }
@@ -715,6 +715,10 @@ void editorProcessKeypress(){
             }
             break;
 
+        case CTRL_KEY('f'):
+            editorFind();
+            break;
+
         case BACKSPACE:
         case CTRL_KEY('h'):
         case DEL_KEY:
@@ -795,7 +799,7 @@ int main(int argc,char *argv[]){
         editorOpen(argv[1]);
     }
 
-    editorSetStatusMessage("HELP:press q=quit | Ctrl+s=save");
+    editorSetStatusMessage("HELP:press q=quit | Ctrl+s=save | Ctrl+f=find");
 
 
     while(1){
