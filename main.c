@@ -37,6 +37,11 @@ enum editorKey {
     PAGE_DOWN  
 };
 
+enum editorHighlight {
+    HL_NORMAL=0,
+    HL_NUMBER
+};
+
 /*** data ***/
 
 struct termios orig_termios;
