@@ -45,6 +45,7 @@ enum editorHighlight {
 };
 
 #define HL_HIGHLIGHT_NUMBERS (1<<0)
+#define HL_HIGHLIGHT_STRINGS (1<<1)
 
 /*** data ***/
 struct editorSyntax {
@@ -90,7 +91,7 @@ struct editorSyntax HLDB[] = {
     {
         "c",
         C_HL_extensions,
-        HL_HIGHLIGHT_NUMBERS      
+        HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS  
     },
 };
 
