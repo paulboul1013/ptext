@@ -288,6 +288,26 @@ int editorSyntaxToColor(int hl){
     }
 }
 
+void editorSelectSyntaxHighlight(){
+    E.syntax=NULL;
+    if (E.filename==NULL) return;
+
+    char *ext=strrchr(E.filename,'.');
+
+    for(unsigned int j=0;j<HLDB_ENTRIES;j++){
+        struct editorSyntax *s=&HLDB[j];
+        
+        unsigned int i=0;
+        while(s->filematch[i]){
+            int is_ext=(s->filematch[i][0]=='.'){
+                
+            }
+        }
+    }
+
+    
+}
+
 /*** row operations ***/
 
 int editorRowCxToRx(erow *row,int cx){
