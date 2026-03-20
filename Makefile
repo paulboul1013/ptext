@@ -8,4 +8,3 @@ all: $(TARGET)
 $(TARGET): main.c
 	$(CC) main.c -o $(TARGET) $(CFLAGS)
 
-main: $(TARGET)
